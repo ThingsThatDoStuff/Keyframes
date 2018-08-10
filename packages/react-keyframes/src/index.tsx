@@ -19,6 +19,7 @@ import { mapValueInRange } from "./mapValueInRange";
 "use strict";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { KfDocument } from "./KeyframesTypes";
 
 // require('art/modes/current').setCurrent(require('art/modes/dom'));
 
@@ -30,10 +31,15 @@ class KfDemo extends React.Component<
       progress: number,
       size: number
     ) => React.ReactElement<any>;
-    hasProgress: boolean;
+    hasProgress?: boolean;
     [key: string]: any;
   },
-  { animating: boolean; progress: number; size: number }
+  {
+    animating: boolean;
+    progress: number;
+    size: number;
+    shouldRenderStuff: boolean;
+  }
 > {
   state = {
     progress: 0,
@@ -199,138 +205,126 @@ class KfDemo extends React.Component<
   }
 }
 
-document.write(`
-  <div id=KfDemoRoot>
-    <button onclick="window.StartKfDemo()">Start!</button>
-  </div>
-`);
+ReactDOM.render(
+  <div>
+    <h2>SpriteMapped fps capped</h2>
+    <KfDemo
+      hasProgress
+      fps={24}
+      duration={4000}
+      renderWithProgressAndSize={(progress, size) => (
+        <div>
+          <KfSpriteMapSurfaceAnimator
+            width={size}
+            progress={progress}
+            doc={require("./assets/sorry.json") as KfDocument}
+          />
+          <KfSpriteMapSurfaceAnimator
+            width={size}
+            progress={progress}
+            doc={require("./assets/anger.json") as KfDocument}
+          />
+          <KfSpriteMapSurfaceAnimator
+            width={size}
+            progress={progress}
+            doc={require("./assets/haha.json") as KfDocument}
+          />
+          <KfSpriteMapSurfaceAnimator
+            width={size}
+            progress={progress}
+            doc={require("./assets/like.json") as KfDocument}
+          />
+          <KfSpriteMapSurfaceAnimator
+            width={size}
+            progress={progress}
+            doc={require("./assets/yay.json") as KfDocument}
+          />
+          <KfSpriteMapSurfaceAnimator
+            width={size}
+            progress={progress}
+            doc={require("./assets/love.json") as KfDocument}
+          />
+        </div>
+      )}
+    />
 
-window.StartKfDemo = () => {
-  ReactDOM.render(
-    <div>
-      <h2>SpriteMapped fps capped</h2>
-      <KfDemo
-        hasProgress
-        fps={24}
-        duration={4000}
-        renderWithProgressAndSize={(progress, size) => (
-          <div>
-            <KfSpriteMapSurfaceAnimator
-              width={size}
-              progress={progress}
-              doc={require("./assets/sorry.json")}
-            />
-            <KfSpriteMapSurfaceAnimator
-              width={size}
-              progress={progress}
-              doc={require("./assets/anger.json")}
-            />
-            <KfSpriteMapSurfaceAnimator
-              width={size}
-              progress={progress}
-              doc={require("./assets/haha.json")}
-            />
-            <KfSpriteMapSurfaceAnimator
-              width={size}
-              progress={progress}
-              doc={require("./assets/like.json")}
-            />
-            <KfSpriteMapSurfaceAnimator
-              width={size}
-              progress={progress}
-              doc={require("./assets/yay.json")}
-            />
-            <KfSpriteMapSurfaceAnimator
-              width={size}
-              progress={progress}
-              doc={require("./assets/love.json")}
-            />
-          </div>
-        )}
-      />
+    <hr />
 
-      <hr />
+    <h2>Render on demand</h2>
+    <KfDemo
+      hasProgress
+      fps={24}
+      duration={4000}
+      renderWithProgressAndSize={(progress, size) => (
+        <div>
+          <KfImageSurface
+            width={size}
+            progress={progress}
+            doc={require("./assets/sorry.json") as KfDocument}
+          />
+          <KfImageSurface
+            width={size}
+            progress={progress}
+            doc={require("./assets/anger.json") as KfDocument}
+          />
+          <KfImageSurface
+            width={size}
+            progress={progress}
+            doc={require("./assets/haha.json") as KfDocument}
+          />
+          <KfImageSurface
+            width={size}
+            progress={progress}
+            doc={require("./assets/like.json") as KfDocument}
+          />
+          <KfImageSurface
+            width={size}
+            progress={progress}
+            doc={require("./assets/yay.json") as KfDocument}
+          />
+          <KfImageSurface
+            width={size}
+            progress={progress}
+            doc={require("./assets/love.json") as KfDocument}
+          />
+        </div>
+      )}
+    />
+    <hr />
 
-      <h2>Render on demand</h2>
-      <KfDemo
-        hasProgress
-        fps={24}
-        duration={4000}
-        renderWithProgressAndSize={(progress, size) => (
-          <div>
-            <KfImageSurface
-              width={size}
-              progress={progress}
-              doc={require("./assets/sorry.json")}
-            />
-            <KfImageSurface
-              width={size}
-              progress={progress}
-              doc={require("./assets/anger.json")}
-            />
-            <KfImageSurface
-              width={size}
-              progress={progress}
-              doc={require("./assets/haha.json")}
-            />
-            <KfImageSurface
-              width={size}
-              progress={progress}
-              doc={require("./assets/like.json")}
-            />
-            <KfImageSurface
-              width={size}
-              progress={progress}
-              doc={require("./assets/yay.json")}
-            />
-            <KfImageSurface
-              width={size}
-              progress={progress}
-              doc={require("./assets/love.json")}
-            />
-          </div>
-        )}
-      />
-      <hr />
-
-      <h2>SpriteMap</h2>
-      <KfDemo
-        fps={24}
-        duration={4000}
-        renderWithProgressAndSize={size => (
-          <div>
-            <KfSpriteMapSurface
-              width={size}
-              doc={require("./assets/sorry.json")}
-            />
-            <KfSpriteMapSurface
-              width={size}
-              doc={require("./assets/anger.json")}
-            />
-            <KfSpriteMapSurface
-              width={size}
-              doc={require("./assets/haha.json")}
-            />
-            <KfSpriteMapSurface
-              width={size}
-              doc={require("./assets/like.json")}
-            />
-            <KfSpriteMapSurface
-              width={size}
-              doc={require("./assets/yay.json")}
-            />
-            <KfSpriteMapSurface
-              width={size}
-              doc={require("./assets/love.json")}
-            />
-          </div>
-        )}
-      />
-    </div>,
-    document.getElementById("KfDemoRoot")
-  );
-};
-
-window.StartKfDemo();
-
-// setTimeout(window.StartKfDemo, 10);
+    <h2>SpriteMap</h2>
+    <KfDemo
+      fps={24}
+      duration={4000}
+      renderWithProgressAndSize={size => (
+        <div>
+          <KfSpriteMapSurface
+            width={size}
+            doc={require("./assets/sorry.json") as KfDocument}
+          />
+          <KfSpriteMapSurface
+            width={size}
+            doc={require("./assets/anger.json") as KfDocument}
+          />
+          <KfSpriteMapSurface
+            width={size}
+            doc={require("./assets/haha.json") as KfDocument}
+          />
+          <KfSpriteMapSurface
+            width={size}
+            doc={require("./assets/like.json") as KfDocument}
+          />
+          <KfSpriteMapSurface
+            width={size}
+            doc={require("./assets/yay.json") as KfDocument}
+          />
+          <KfSpriteMapSurface
+            width={size}
+            doc={require("./assets/love.json") as KfDocument}
+          />
+        </div>
+      )}
+    />
+  </div>,
+  document.getElementById("KfDemoRoot")
+);

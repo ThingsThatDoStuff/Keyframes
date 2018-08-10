@@ -67,7 +67,7 @@ interface KfGradient {
   ramp_end?: KfGradientStop;
 }
 export interface KfDrawableProps {
-  visible: boolean;
+  visible?: boolean;
   doc: KfDocument;
   progress: number;
   width?: number;

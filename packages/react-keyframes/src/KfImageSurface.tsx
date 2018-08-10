@@ -22,14 +22,14 @@ class KfImageSurfacePrecomputed extends React.Component {
   }
 }
 */
-export class KfImageSurface extends React.Component<
-  {
-    doc: KfDocument;
-    progress: number;
-    width?: number;
-    height?: number;
-  } & KfDrawableProps
-> {
+interface KfImageSurfaceProps extends KfDrawableProps {
+  doc: KfDocument;
+  progress?: number;
+  width?: number;
+  height?: number;
+}
+
+export class KfImageSurface extends React.Component<KfImageSurfaceProps> {
   render() {
     const {
       width,
