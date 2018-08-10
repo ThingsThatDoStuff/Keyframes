@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
+ * Original work Copyright (c) 2016-present, Facebook, Inc.
+ * Modifications Copyright (c) 2018, Things That Do Stuff, LLC
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
@@ -7,6 +8,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 'use strict';
+
+// Hello World!
 
 import React from 'react';
 import ReactDOM from 'react-dom';
