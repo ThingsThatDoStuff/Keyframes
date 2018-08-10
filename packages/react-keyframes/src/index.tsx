@@ -82,7 +82,7 @@ class KfDemo extends React.Component<
       );
       if (progress !== progress) {
         console.error("progress NaN");
-        debugger;
+        // debugger;
       }
 
       if (progress > 1) {
