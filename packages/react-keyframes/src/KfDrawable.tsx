@@ -1,10 +1,6 @@
+// tslint:disable:ordered-imports
 import { Group, Shape, Transform, LinearGradient } from "react-art";
-import {
-  KfDrawableProps,
-  KfTimingCurve,
-  KfValue,
-  KfGradientStop
-} from "./KeyframesTypes";
+import { IKfDrawableProps, KfTimingCurve, IKfValue, KfGradientStop } from "./KeyframesTypes";
 import { EasingFunction } from "bezier-easing";
 import * as React from "react";
 import * as BezierEasing from "bezier-easing";
@@ -12,111 +8,32 @@ import * as Morph from "art/morph/path";
 import {
   blendNumbersLinear,
   filterToStroke,
-  prepGradientValuesForBlending
+  prepGradientValuesForBlending,
 } from "./filterToStroke";
 import { getValueForCurrentFrame } from "./getValueForCurrentFrame";
 import { transformFromAnimations } from "./transformFromAnimations";
 import { transformUsingAnimationGroups } from "./filterGroupsByThisId";
 import { hexColorSwapAlphaPosition } from "./hexColorSwapAlphaPosition";
 
-export class KfDrawable extends React.Component<KfDrawableProps> {
-  static defaultProps = {
-    visible: true
+export class KfDrawable extends React.PureComponent<IKfDrawableProps> {
+  public static defaultProps = {
+    visible: true,
   };
 
-  static _easingCache = new WeakMap();
-  _easingForCurve(curve: KfTimingCurve): EasingFunction {
-    let easing = KfDrawable._easingCache.get(curve);
-    if (easing == null) {
-      const [[curveA, curveB], [curveC, curveD]] = curve;
-      easing = BezierEasing(curveA, curveB, curveC, curveD);
-      KfDrawable._easingCache.set(curve, easing);
-    }
-    return easing;
-  }
+  private static tweenCache = new WeakMap();
 
-  static _tweenCache = new WeakMap();
-  _tweenForCurve(curve: KfTimingCurve, a: string[], b: string[]): Morph.Tween {
-    let tween = KfDrawable._tweenCache.get(curve);
-    if (tween == null) {
-      tween = Morph.Tween(Morph.Path(a.join(" ")), Morph.Path(b.join(" ")));
-      KfDrawable._tweenCache.set(curve, tween);
-    }
-    return tween;
-  }
+  private static gradientValuesCache = new WeakMap();
 
-  static _gradientValuesCache = new WeakMap();
-  _gradientNumberValuesFromStrings(
-    values: KfValue<string>[]
-  ): KfValue<number[]>[] {
-    let gradientValues = KfDrawable._gradientValuesCache.get(values);
-    if (gradientValues == null) {
-      gradientValues = values.map(prepGradientValuesForBlending);
-      KfDrawable._gradientValuesCache.set(values, gradientValues);
-    }
-    return gradientValues;
-  }
+  private static easingCache = new WeakMap();
 
-  blendShapes = (
-    a: string[],
-    b: string[],
-    curve: KfTimingCurve,
-    progress: number
-  ): any => {
-    const easing = this._easingForCurve(curve);
-    const tween = this._tweenForCurve(curve, a, b);
-    tween.tween(easing(progress));
-    return tween;
-  };
-  blendNumbers = (
-    aNums: number[],
-    bNums: number[],
-    curve: KfTimingCurve,
-    progress: number
-  ): number[] => {
-    const easing = this._easingForCurve(curve);
-    const easedProgress = easing(progress);
-    const blendedNums = new Array(aNums.length);
-    for (let index = aNums.length; --index >= 0; ) {
-      blendedNums[index] = blendNumbersLinear(
-        aNums[index],
-        bNums[index],
-        easedProgress
-      );
-    }
-    return blendedNums;
-  };
-
-  getGradientColor(
-    { key_values, timing_curves }: KfGradientStop,
-    currentFrameNumber: number
-  ) /*: Color*/ {
-    const values = this._gradientNumberValuesFromStrings(key_values);
-    const colorParts =
-      getValueForCurrentFrame(
-        values,
-        timing_curves,
-        currentFrameNumber,
-        this.blendNumbers
-      ) || [];
-    const [alpha, red, green, blue] = colorParts;
-    return {
-      alpha: Math.round(alpha),
-      red: Math.round(red),
-      green: Math.round(green),
-      blue: Math.round(blue),
-      isColor: true
-    };
-  }
-
-  render() {
+  public render() {
     let { visible } = this.props;
     const { width, height, x, y, progress = 0 } = this.props;
     const {
       name,
       canvas_size: [docWidth, docHeight],
       features,
-      animation_frame_count
+      animation_frame_count,
     } = this.props.doc;
     const currentFrameNumber = animation_frame_count * progress;
     let groupTransform =
@@ -124,7 +41,7 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
       (width || height) &&
       new Transform().scale(
         (width || height || docWidth) / docWidth,
-        (height || width || docHeight) / docHeight
+        (height || width || docHeight) / docHeight,
       );
     if (x || y) {
       if (!groupTransform) {
@@ -145,13 +62,13 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
       >
         {features.map(feature => {
           const {
-            name,
+            name: featureName,
             fill_color,
             stroke_color,
             feature_animations,
             key_frames,
             timing_curves,
-            effects
+            effects,
           } = feature;
 
           let fill;
@@ -165,20 +82,19 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
                   fill = new LinearGradient(
                     [
                       this.getGradientColor(color_start, currentFrameNumber),
-                      this.getGradientColor(color_end, currentFrameNumber)
+                      this.getGradientColor(color_end, currentFrameNumber),
                     ],
                     0,
                     0,
                     0,
-                    docHeight
+                    docHeight,
                   );
                 }
                 break;
               // TODO(aylott): Support radial gradient_type
               default:
-                console.warn(
-                  `Skipping unsupported gradient_type ${gradient.gradient_type}`
-                );
+                // tslint:disable-next-line:no-console
+                console.warn(`Skipping unsupported gradient_type ${gradient.gradient_type}`);
             }
           }
 
@@ -186,49 +102,45 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
             key_frames,
             timing_curves,
             currentFrameNumber,
-            this.blendShapes
+            this.blendShapes,
           );
 
           let { stroke_width } = feature;
-          feature_animations &&
-            feature_animations
-              .filter(filterToStroke)
-              .forEach(({ timing_curves, key_values }) => {
-                const values = getValueForCurrentFrame(
-                  key_values,
-                  timing_curves,
-                  currentFrameNumber,
-                  this.blendNumbers
-                );
-                if (values) {
-                  stroke_width = values[0];
-                }
-              });
+          if (feature_animations) {
+            // tslint:disable-next-line:no-shadowed-variable
+            feature_animations.filter(filterToStroke).forEach(({ timing_curves, key_values }) => {
+              const values = getValueForCurrentFrame(
+                key_values,
+                timing_curves,
+                currentFrameNumber,
+                this.blendNumbers,
+              );
+              if (values) {
+                stroke_width = values[0];
+              }
+            });
+          }
 
           let transform =
             feature_animations &&
-            transformFromAnimations(
-              feature_animations,
-              currentFrameNumber,
-              this.blendNumbers
-            );
+            transformFromAnimations(feature_animations, currentFrameNumber, this.blendNumbers);
           if (feature.animation_group) {
-            const groupTransform = transformUsingAnimationGroups(
+            const groupTransformTmp = transformUsingAnimationGroups(
               this.props.doc,
               feature.animation_group,
               currentFrameNumber,
-              this.blendNumbers
+              this.blendNumbers,
             );
             if (transform) {
-              transform = groupTransform.transform(transform);
+              transform = groupTransformTmp.transform(transform);
             } else {
-              transform = groupTransform;
+              transform = groupTransformTmp;
             }
           }
 
           const shapeElement = shapeData && (
             <Shape
-              key={name}
+              key={featureName}
               fill={fill || hexColorSwapAlphaPosition(fill_color)}
               stroke={hexColorSwapAlphaPosition(stroke_color)}
               strokeWidth={stroke_width}
@@ -241,5 +153,72 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
         })}
       </Group>
     );
+  }
+  private _easingForCurve(curve: KfTimingCurve): EasingFunction {
+    let easing = KfDrawable.easingCache.get(curve);
+    if (easing == null) {
+      const [[curveA, curveB], [curveC, curveD]] = curve;
+      easing = BezierEasing(curveA, curveB, curveC, curveD);
+      KfDrawable.easingCache.set(curve, easing);
+    }
+    return easing;
+  }
+  private _tweenForCurve(curve: KfTimingCurve, a: string[], b: string[]): Morph.Tween {
+    let tween = KfDrawable.tweenCache.get(curve);
+    if (tween == null) {
+      tween = Morph.Tween(Morph.Path(a.join(" ")), Morph.Path(b.join(" ")));
+      KfDrawable.tweenCache.set(curve, tween);
+    }
+    return tween;
+  }
+  private _gradientNumberValuesFromStrings(
+    values: Array<IKfValue<string>>,
+  ): Array<IKfValue<number[]>> {
+    let gradientValues = KfDrawable.gradientValuesCache.get(values);
+    if (gradientValues == null) {
+      gradientValues = values.map(prepGradientValuesForBlending);
+      KfDrawable.gradientValuesCache.set(values, gradientValues);
+    }
+    return gradientValues;
+  }
+
+  private blendShapes = (a: string[], b: string[], curve: KfTimingCurve, progress: number): any => {
+    const easing = this._easingForCurve(curve);
+    const tween = this._tweenForCurve(curve, a, b);
+    tween.tween(easing(progress));
+    return tween;
+  };
+
+  private blendNumbers = (
+    aNums: number[],
+    bNums: number[],
+    curve: KfTimingCurve,
+    progress: number,
+  ): number[] => {
+    const easing = this._easingForCurve(curve);
+    const easedProgress = easing(progress);
+    const blendedNums = new Array(aNums.length);
+    for (let index = aNums.length; --index >= 0; ) {
+      blendedNums[index] = blendNumbersLinear(aNums[index], bNums[index], easedProgress);
+    }
+    return blendedNums;
+  };
+
+  private getGradientColor(
+    { key_values, timing_curves }: KfGradientStop,
+    currentFrameNumber: number,
+  ) {
+    const values = this._gradientNumberValuesFromStrings(key_values);
+    const colorParts =
+      getValueForCurrentFrame(values, timing_curves, currentFrameNumber, this.blendNumbers) || [];
+    const [alpha, red, green, blue] = colorParts;
+    // tslint:disable:object-literal-sort-keys
+    return {
+      alpha: Math.round(alpha),
+      red: Math.round(red),
+      green: Math.round(green),
+      blue: Math.round(blue),
+      isColor: true,
+    };
   }
 }

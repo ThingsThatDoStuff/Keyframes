@@ -1,74 +1,73 @@
-export interface KfDocument {
+export interface IKfDocument {
   key: number;
   name: string;
   canvas_size: KfPoint;
   frame_rate: number;
   animation_frame_count: number;
-  features: KfFeature[];
-  animation_groups: KfAnimationGroup[];
+  features: IKfFeature[];
+  animation_groups: IKfAnimationGroup[];
 }
-export interface KfAnimationGroup {
+export interface IKfAnimationGroup {
   group_id: number;
   group_name: string;
   parent_group?: number;
   animations: KfProperty[];
 }
-interface KfFeature {
+interface IKfFeature {
   name: string;
   fill_color?: string;
   stroke_color?: string;
   stroke_width?: number;
   effects?: {
-    gradient?: KfGradient;
+    gradient?: IKfGradient;
   };
   animation_group?: number;
   feature_animations?: KfProperty[];
   timing_curves?: KfTimingCurve[];
-  key_frames: KfValue<string[]>[];
+  key_frames: Array<IKfValue<string[]>>;
 }
-export interface KfValue<T> {
+export interface IKfValue<T> {
   start_frame: number;
   data: T;
 }
-interface KfAnimatable<T> {
+interface IKfAnimatable<T> {
   timing_curves: KfTimingCurve[];
-  key_values: KfValue<T>[];
+  key_values: Array<IKfValue<T>>;
 }
 type KfPoint = [number, number];
 export type KfProperty =
-  | KfPropertyPosition
-  | KfPropertyRotation
-  | KfPropertyScale
-  | KfPropertyStrokeWidth;
-interface KfPropertyPosition extends KfAnimatable<KfPoint> {
+  | IKfPropertyPosition
+  | IKfPropertyRotation
+  | IKfPropertyScale
+  | IKfPropertyStrokeWidth;
+interface IKfPropertyPosition extends IKfAnimatable<KfPoint> {
   property: "POSITION";
   anchor?: KfPoint;
 }
-interface KfPropertyRotation
-  extends KfAnimatable<[number] | [number, number, number]> {
+interface IKfPropertyRotation extends IKfAnimatable<[number] | [number, number, number]> {
   property: "ROTATION";
   anchor: KfPoint;
 }
-interface KfPropertyScale extends KfAnimatable<KfPoint> {
+interface IKfPropertyScale extends IKfAnimatable<KfPoint> {
   property: "SCALE";
   anchor?: KfPoint;
 }
-interface KfPropertyStrokeWidth extends KfAnimatable<[number]> {
+interface IKfPropertyStrokeWidth extends IKfAnimatable<[number]> {
   property: "STROKE_WIDTH";
   anchor?: undefined;
 }
 export type KfTimingCurve = [KfPoint, KfPoint];
-export type KfGradientStop = KfAnimatable<string>;
-interface KfGradient {
+export type KfGradientStop = IKfAnimatable<string>;
+interface IKfGradient {
   gradient_type: "linear" | "radial";
   color_start?: KfGradientStop;
   color_end?: KfGradientStop;
   ramp_start?: KfGradientStop;
   ramp_end?: KfGradientStop;
 }
-export interface KfDrawableProps {
+export interface IKfDrawableProps {
   visible?: boolean;
-  doc: KfDocument;
+  doc: IKfDocument;
   progress?: number;
   width?: number;
   height?: number;

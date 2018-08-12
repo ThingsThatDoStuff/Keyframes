@@ -1,12 +1,12 @@
-import { KfDrawableProps, KfDocument } from "./KeyframesTypes";
-import { Surface } from "react-art";
-import { KfDrawable } from "./KfDrawable";
 import * as React from "react";
+import { Surface } from "react-art";
+import { IKfDocument, IKfDrawableProps } from "./KeyframesTypes";
+import { KfDrawable } from "./KfDrawable";
 /*
-class KfImageSurfacePrecomputed extends React.Component {
+class KfImageSurfacePrecomputed extends React.PureComponent {
   props: {
     frameCount: number,
-    Group: React.Component,
+    Group: React.PureComponent,
     progress: number,
     
   },
@@ -22,27 +22,24 @@ class KfImageSurfacePrecomputed extends React.Component {
   }
 }
 */
-interface KfImageSurfaceProps extends KfDrawableProps {
-  doc: KfDocument;
+interface IKfImageSurfaceProps extends IKfDrawableProps {
+  doc: IKfDocument;
   progress?: number;
   width?: number;
   height?: number;
 }
 
-export class KfImageSurface extends React.Component<KfImageSurfaceProps> {
-  render() {
+export class KfImageSurface extends React.PureComponent<IKfImageSurfaceProps> {
+  public render() {
     const {
       width,
       height,
       doc: {
-        canvas_size: [docWidth, docHeight]
-      }
+        canvas_size: [docWidth, docHeight],
+      },
     } = this.props;
     return (
-      <Surface
-        width={width || height || docWidth}
-        height={height || width || docHeight}
-      >
+      <Surface width={width || height || docWidth} height={height || width || docHeight}>
         <KfDrawable {...this.props} />
       </Surface>
     );

@@ -1,4 +1,4 @@
-import { KfAnimationGroup, KfDocument, KfTimingCurve } from "./KeyframesTypes";
+import { IKfAnimationGroup, IKfDocument, KfTimingCurve } from "./KeyframesTypes";
 import { transformFromAnimations } from "./transformFromAnimations";
 
 // import {
@@ -17,37 +17,28 @@ import { transformFromAnimations } from "./transformFromAnimations";
 //   testEqual(() => blendNumbersLinear(-99, 99, 0.5), 0);
 //   testEqual(() => blendNumbersLinear(-99, 99, 0.75), 49.5);
 // }
-function filterGroupsByThisId({ group_id }: KfAnimationGroup): boolean {
+function filterGroupsByThisId({ group_id }: IKfAnimationGroup): boolean {
   // @ts-ignore
   return group_id === this;
 }
 export function transformUsingAnimationGroups<T>(
-  doc: KfDocument,
+  doc: IKfDocument,
   id: number,
   currentFrameNumber: number,
-  blend?: (
-    a: number[],
-    b: number[],
-    curve: KfTimingCurve,
-    progress: number
-  ) => number[]
+  blend?: (a: number[], b: number[], curve: KfTimingCurve, progress: number) => number[],
 ) /*: Transform*/ {
   const group = doc.animation_groups.filter(filterGroupsByThisId, id)[0];
   if (!group) {
     throw new Error(`Animation Group ${id} not found`);
   }
   const { animations, parent_group } = group;
-  let transform = transformFromAnimations(
-    animations,
-    currentFrameNumber,
-    blend
-  );
+  let transform = transformFromAnimations(animations, currentFrameNumber, blend);
   if (parent_group) {
     const groupTransform = transformUsingAnimationGroups(
       doc,
       parent_group,
       currentFrameNumber,
-      blend
+      blend,
     );
     transform = groupTransform.transform(transform);
   }

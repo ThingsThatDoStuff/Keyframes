@@ -1,7 +1,6 @@
-import {
-  KfSpriteMapSurfaceAnimator,
-  KfSpriteMapSurface
-} from "./KfSpriteMapSurfaceAnimator";
+// tslint:disable:jsx-no-lambda no-shadowed-variable
+
+import { KfSpriteMapSurfaceAnimator } from "./KfSpriteMapSurfaceAnimator";
 
 import { KfImageSurface } from "./KfImageSurface";
 
@@ -16,21 +15,18 @@ import { mapValueInRange } from "./mapValueInRange";
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-"use strict";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { KfDocument } from "./KeyframesTypes";
+import { IKfDocument } from "./KeyframesTypes";
+import { KfSpriteMapSurface } from "./KfSpriteMapSurface";
 
 // require('art/modes/current').setCurrent(require('art/modes/dom'));
 
-class KfDemo extends React.Component<
+class KfDemo extends React.PureComponent<
   {
     fps: number;
     duration: number;
-    renderWithProgressAndSize: (
-      progress: number,
-      size: number
-    ) => React.ReactElement<any>;
+    renderWithProgressAndSize: (progress: number, size: number) => React.ReactElement<any>;
     hasProgress?: boolean;
     [key: string]: any;
   },
@@ -41,19 +37,20 @@ class KfDemo extends React.Component<
     shouldRenderStuff: boolean;
   }
 > {
-  state = {
-    progress: 0,
+  public state = {
     animating: false,
+    progress: 0,
+    shouldRenderStuff: false,
     size: 64,
-    shouldRenderStuff: false
   };
 
-  _rafTimer: number;
-  animationStartTime: number;
-  animationEndTime: number;
-  nextFrameStartTime: number;
-  handleRAF = () => {
-    this._rafTimer = -1;
+  private animationStartTime: number;
+  private animationEndTime: number;
+  private nextFrameStartTime: number;
+
+  private rafTimer: number;
+  public handleRAF = () => {
+    this.rafTimer = -1;
     if (!this.state.animating) {
       return false;
     }
@@ -78,12 +75,12 @@ class KfDemo extends React.Component<
         this.animationStartTime, // fromLow
         this.animationEndTime, // fromHigh
         0, // toLow
-        1 // toHigh
+        1, // toHigh
       );
-      if (progress !== progress) {
-        console.error("progress NaN");
-        // debugger;
-      }
+      // if (progress !== progress) {
+      //   console.error("progress NaN");
+      //   // debugger;
+      // }
 
       if (progress > 1) {
         progress = 0;
@@ -94,23 +91,28 @@ class KfDemo extends React.Component<
     return true;
   };
 
-  tickRAF() {
-    this._rafTimer && window.cancelAnimationFrame(this._rafTimer);
-    this._rafTimer = window.requestAnimationFrame(this.handleRAF);
+  public tickRAF() {
+    if (this.rafTimer) {
+      window.cancelAnimationFrame(this.rafTimer);
+    }
+    this.rafTimer = window.requestAnimationFrame(this.handleRAF);
   }
-  componentDidMount() {
+  public componentDidMount() {
     this.tickRAF();
   }
-  componentWillUnmount() {
-    this._rafTimer && window.cancelAnimationFrame(this._rafTimer);
+  public componentWillUnmount() {
+    if (this.rafTimer) {
+      window.cancelAnimationFrame(this.rafTimer);
+    }
   }
-  componentWillUpdate(_nextProps: any, nextState: { animating: any }) {
+  // tslint:disable-next-line:variable-name
+  public componentWillUpdate(_nextProps: any, nextState: { animating: any }) {
     if (nextState.animating && !this.state.animating) {
       this.tickRAF();
     }
   }
 
-  render() {
+  public render() {
     const { progress, animating, size } = this.state;
     return (
       <div>
@@ -126,9 +128,7 @@ class KfDemo extends React.Component<
                   min={16}
                   max={512}
                   step={4}
-                  onChange={({ target: { valueAsNumber: size } }) =>
-                    this.setState({ size })
-                  }
+                  onChange={({ target: { valueAsNumber: size } }) => this.setState({ size })}
                 />
               </td>
               <td style={{ width: 1 }}>
@@ -139,9 +139,7 @@ class KfDemo extends React.Component<
                   min={16}
                   max={512}
                   step={4}
-                  onChange={({ target: { valueAsNumber: size } }) =>
-                    this.setState({ size })
-                  }
+                  onChange={({ target: { valueAsNumber: size } }) => this.setState({ size })}
                 />
               </td>
             </tr>
@@ -185,9 +183,7 @@ class KfDemo extends React.Component<
             <input
               type="checkbox"
               checked={animating}
-              onChange={({ target: { checked: animating } }) =>
-                this.setState({ animating })
-              }
+              onChange={({ target: { checked: animating } }) => this.setState({ animating })}
             />
           </label>
         )}
@@ -195,9 +191,7 @@ class KfDemo extends React.Component<
         {((this.props.shouldRender || this.state.shouldRenderStuff) &&
           this.props.renderWithProgressAndSize(progress, size)) || (
           <div>
-            <button onClick={() => this.setState({ shouldRenderStuff: true })}>
-              Initialize
-            </button>
+            <button onClick={() => this.setState({ shouldRenderStuff: true })}>Initialize</button>
           </div>
         )}
       </div>
@@ -209,7 +203,7 @@ ReactDOM.render(
   <div>
     <h2>SpriteMapped fps capped</h2>
     <KfDemo
-      hasProgress
+      hasProgress={true}
       fps={24}
       duration={4000}
       renderWithProgressAndSize={(progress, size) => (
@@ -217,32 +211,32 @@ ReactDOM.render(
           <KfSpriteMapSurfaceAnimator
             width={size}
             progress={progress}
-            doc={require("./assets/sorry.json") as KfDocument}
+            doc={require("./assets/sorry.json") as IKfDocument}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
             progress={progress}
-            doc={require("./assets/anger.json") as KfDocument}
+            doc={require("./assets/anger.json") as IKfDocument}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
             progress={progress}
-            doc={require("./assets/haha.json") as KfDocument}
+            doc={require("./assets/haha.json") as IKfDocument}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
             progress={progress}
-            doc={require("./assets/like.json") as KfDocument}
+            doc={require("./assets/like.json") as IKfDocument}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
             progress={progress}
-            doc={require("./assets/yay.json") as KfDocument}
+            doc={require("./assets/yay.json") as IKfDocument}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
             progress={progress}
-            doc={require("./assets/love.json") as KfDocument}
+            doc={require("./assets/love.json") as IKfDocument}
           />
         </div>
       )}
@@ -252,7 +246,7 @@ ReactDOM.render(
 
     <h2>Render on demand</h2>
     <KfDemo
-      hasProgress
+      hasProgress={true}
       fps={24}
       duration={4000}
       renderWithProgressAndSize={(progress, size) => (
@@ -260,32 +254,32 @@ ReactDOM.render(
           <KfImageSurface
             width={size}
             progress={progress}
-            doc={require("./assets/sorry.json") as KfDocument}
+            doc={require("./assets/sorry.json") as IKfDocument}
           />
           <KfImageSurface
             width={size}
             progress={progress}
-            doc={require("./assets/anger.json") as KfDocument}
+            doc={require("./assets/anger.json") as IKfDocument}
           />
           <KfImageSurface
             width={size}
             progress={progress}
-            doc={require("./assets/haha.json") as KfDocument}
+            doc={require("./assets/haha.json") as IKfDocument}
           />
           <KfImageSurface
             width={size}
             progress={progress}
-            doc={require("./assets/like.json") as KfDocument}
+            doc={require("./assets/like.json") as IKfDocument}
           />
           <KfImageSurface
             width={size}
             progress={progress}
-            doc={require("./assets/yay.json") as KfDocument}
+            doc={require("./assets/yay.json") as IKfDocument}
           />
           <KfImageSurface
             width={size}
             progress={progress}
-            doc={require("./assets/love.json") as KfDocument}
+            doc={require("./assets/love.json") as IKfDocument}
           />
         </div>
       )}
@@ -298,33 +292,15 @@ ReactDOM.render(
       duration={4000}
       renderWithProgressAndSize={size => (
         <div>
-          <KfSpriteMapSurface
-            width={size}
-            doc={require("./assets/sorry.json") as KfDocument}
-          />
-          <KfSpriteMapSurface
-            width={size}
-            doc={require("./assets/anger.json") as KfDocument}
-          />
-          <KfSpriteMapSurface
-            width={size}
-            doc={require("./assets/haha.json") as KfDocument}
-          />
-          <KfSpriteMapSurface
-            width={size}
-            doc={require("./assets/like.json") as KfDocument}
-          />
-          <KfSpriteMapSurface
-            width={size}
-            doc={require("./assets/yay.json") as KfDocument}
-          />
-          <KfSpriteMapSurface
-            width={size}
-            doc={require("./assets/love.json") as KfDocument}
-          />
+          <KfSpriteMapSurface width={size} doc={require("./assets/sorry.json") as IKfDocument} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/anger.json") as IKfDocument} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/haha.json") as IKfDocument} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/like.json") as IKfDocument} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/yay.json") as IKfDocument} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/love.json") as IKfDocument} />
         </div>
       )}
     />
   </div>,
-  document.getElementById("KfDemoRoot")
+  document.getElementById("KfDemoRoot"),
 );

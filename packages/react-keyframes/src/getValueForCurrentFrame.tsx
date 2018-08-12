@@ -1,25 +1,23 @@
-import { KfTimingCurve, KfValue } from "./KeyframesTypes";
+import { IKfValue, KfTimingCurve } from "./KeyframesTypes";
 export function getValueForCurrentFrame<T>(
-  kfValues: Array<KfValue<T>>,
-  //@ts-ignore
-  timing_curves: Array<KfTimingCurve> | undefined,
+  kfValues: Array<IKfValue<T>>,
+  // tslint:disable-next-line:variable-name
+  timing_curves: KfTimingCurve[] | undefined,
   targetFrame: number,
-  blend?: (a: T, b: T, curve: KfTimingCurve, progress: number) => T
+  blend?: (a: T, b: T, curve: KfTimingCurve, progress: number) => T,
 ): T {
-  let kfValueIndex, kfValue, kfValueNext;
+  let kfValueIndex;
+  let kfValue;
+  let kfValueNext;
   if (kfValues.length > 0) {
-    let _kfValue,
-      targetFrameBestMatch = -1;
-    for (
-      let index = -1, kfValuesCount = kfValues.length;
-      ++index < kfValuesCount;
-
-    ) {
-      _kfValue = kfValues[index];
-      const { start_frame } = _kfValue;
+    let kfValueTmp;
+    let targetFrameBestMatch = -1;
+    for (let index = -1, kfValuesCount = kfValues.length; ++index < kfValuesCount; ) {
+      kfValueTmp = kfValues[index];
+      const { start_frame } = kfValueTmp;
       // There can't be more than one perfect match
       if (start_frame === targetFrame) {
-        kfValue = _kfValue;
+        kfValue = kfValueTmp;
         kfValueIndex = index;
         kfValueNext = null;
         break;
@@ -31,7 +29,7 @@ export function getValueForCurrentFrame<T>(
       // Keep any that are closer to the target
       if (start_frame >= targetFrameBestMatch) {
         targetFrameBestMatch = start_frame;
-        kfValue = _kfValue;
+        kfValue = kfValueTmp;
         kfValueIndex = index;
         kfValueNext = kfValues[index + 1];
       }
@@ -41,17 +39,10 @@ export function getValueForCurrentFrame<T>(
     kfValueIndex = 0;
     kfValue = kfValues[kfValueIndex];
   }
-  if (
-    kfValue &&
-    kfValueNext &&
-    timing_curves &&
-    blend &&
-    kfValueIndex != null
-  ) {
+  if (kfValue && kfValueNext && timing_curves && blend && kfValueIndex != null) {
     const minFrame = kfValue.start_frame;
     const maxFrame = kfValueNext.start_frame;
-    const progressBetweenFrames =
-      (targetFrame - minFrame) / (maxFrame - minFrame);
+    const progressBetweenFrames = (targetFrame - minFrame) / (maxFrame - minFrame);
     const curve = timing_curves[kfValueIndex];
     return blend(kfValue.data, kfValueNext.data, curve, progressBetweenFrames);
   }

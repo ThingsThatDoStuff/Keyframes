@@ -1,16 +1,11 @@
-import { KfTimingCurve, KfProperty } from "./KeyframesTypes";
 import { Transform } from "react-art";
-import { getValueForCurrentFrame } from "./getValueForCurrentFrame";
 import { sortAnimations } from "./AnimationOrder";
+import { getValueForCurrentFrame } from "./getValueForCurrentFrame";
+import { KfProperty, KfTimingCurve } from "./KeyframesTypes";
 export function transformFromAnimations(
   animations: KfProperty[],
   currentFrameNumber: number,
-  blend?: (
-    a: number[],
-    b: number[],
-    curve: KfTimingCurve,
-    progress: number
-  ) => number[]
+  blend?: (a: number[], b: number[], curve: KfTimingCurve, progress: number) => number[],
 ): any {
   if (!(animations && animations.length > 0)) {
     return;
@@ -22,7 +17,7 @@ export function transformFromAnimations(
       key_values,
       timing_curves,
       currentFrameNumber,
-      blend
+      blend,
     );
     if (values == null) {
       return;
@@ -40,18 +35,24 @@ export function transformFromAnimations(
         transform.translate(values[0], values[1]);
         break;
       case "SCALE":
-        anchor && transform.translate(anchor[0], anchor[1]);
+        if (anchor) {
+          transform.translate(anchor[0], anchor[1]);
+        }
         transform.scale(values[0] / 100, values[1] / 100);
-        anchor && transform.translate(-anchor[0], -anchor[1]);
+        if (anchor) {
+          transform.translate(-anchor[0], -anchor[1]);
+        }
         break;
       case "ROTATION":
         if (!anchor) {
+          // tslint:disable-next-line:no-console
           console.warn(`Skipping ${property} because anchor is missing`);
         } else {
           transform.rotate(values[0], anchor[0], anchor[1]);
         }
         break;
       default:
+        // tslint:disable-next-line:no-console
         console.warn("Skipping unsupported property", property);
     }
   });
