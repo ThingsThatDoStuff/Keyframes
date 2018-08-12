@@ -1,0 +1,22 @@
+{
+  "main": "build/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^16.0.31",
+    "framer": "^0.1.28"
+  },
+  "peerDependencies": {
+    "framer": "^0.1.28",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0"
+  },
+  "framer": {
+    "id": "2e75514d-97e3-464f-b1dd-7da0376e4b83"
+  },
+  "author": "Thomas Aylott <thomas@thingsthatdostuff.com>",
+  "dependencies": {
+    "art": "^0.10.3",
+    "bezier-easing": "^2.1.0",
+    "react-art": "^16.4.2"
+  }
+}
