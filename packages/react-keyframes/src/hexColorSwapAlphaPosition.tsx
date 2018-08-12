@@ -1,6 +1,6 @@
-export function hexColorSwapAlphaPosition(color?: string): string {
+export function hexColorSwapAlphaPosition(color?: string): string | null {
   if (!color) {
-    return "";
+    return null;
   }
   return "#" + color.substr(3, 6) + color.substr(1, 2);
 }
