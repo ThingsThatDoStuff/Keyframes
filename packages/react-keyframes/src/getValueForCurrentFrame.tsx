@@ -1,7 +1,8 @@
 import { KfTimingCurve, KfValue } from "./KeyframesTypes";
 export function getValueForCurrentFrame<T>(
-  kfValues: KfValue<T>[],
-  timing_curves: KfTimingCurve[] | undefined,
+  kfValues: Array<KfValue<T>>,
+  //@ts-ignore
+  timing_curves: Array<KfTimingCurve> | undefined,
   targetFrame: number,
   blend?: (a: T, b: T, curve: KfTimingCurve, progress: number) => T
 ): T {

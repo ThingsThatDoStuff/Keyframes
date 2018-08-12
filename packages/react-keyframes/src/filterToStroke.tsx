@@ -1,13 +1,13 @@
-import { KfValue } from "./KeyframesTypes";
 import Color from "art/core/color";
+import { KfValue } from "./KeyframesTypes";
 export const filterToStroke = ({ property }: { property: string }) =>
   property === "STROKE_WIDTH";
 export const prepGradientValuesForBlending = ({
-  start_frame,
-  data
+  data,
+  start_frame
 }: KfValue<string>): KfValue<number[]> => ({
-  start_frame,
-  data: Color.parseHEX(data)
+  data: Color.parseHEX(data),
+  start_frame
 });
 export function blendNumbersLinear(
   aNum: number,

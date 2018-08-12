@@ -1,21 +1,17 @@
-import { Surface, Group, Shape, Transform, LinearGradient } from "react-art";
+import { Surface } from "react-art";
 import * as React from "react";
 import { KfDocument } from "./KeyframesTypes";
 import { KfDrawable } from "./KfDrawable";
-export class KfSpriteMapSurface extends React.Component {
-  props: {
-    doc: KfDocument;
-    width?: number;
-    height?: number;
-  };
-  shouldComponentUpdate({
-    doc: docB,
-    width: widthB,
-    height: heightB
-  }): boolean {
-    const { doc: docA, width: widthA, height: heightA } = this.props;
-    return !(docA === docB && widthA === widthB && heightA === heightB);
-  }
+
+export class KfSpriteMapSurface extends React.PureComponent<{
+  doc: KfDocument;
+  width?: number;
+  height?: number;
+  frameNum?: number;
+  frameIndex?: number;
+  currentRow?: number;
+  currentCol?: number;
+}> {
   render() {
     const {
       width,
@@ -93,7 +89,6 @@ export class KfSpriteMapSurfaceAnimator extends React.Component {
     const frameCount = animation_frame_count;
     const frameIndexMax = frameCount - 1;
     const cols = Math.ceil(Math.sqrt(frameCount));
-    const rows = Math.ceil(frameCount / cols);
     const frameIndex = Math.round(frameIndexMax * progress);
     const currentRow = Math.floor(frameIndex / cols);
     const currentCol = frameIndex % cols;

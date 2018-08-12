@@ -1,8 +1,9 @@
+import { KfAnimationGroup, KfDocument, KfTimingCurve } from "./KeyframesTypes";
+import { transformFromAnimations } from "./transformFromAnimations";
+
 // import {
 //   Transform,
 // } from "react-art";
-import { KfTimingCurve, KfAnimationGroup, KfDocument } from "./KeyframesTypes";
-import { transformFromAnimations } from "./transformFromAnimations";
 // if (typeof window.__DEV__ !== "undefined" && window.__DEV__) {
 //   function testEqual(testEqualFn, expected) {
 //     const result = testEqualFn();
