@@ -17,9 +17,11 @@ import { mapValueInRange } from "./mapValueInRange";
  */
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { IKfDocument } from "./KeyframesTypes";
 import { KfSpriteMapSurface } from "./KfSpriteMapSurface";
 
+// import * as domMode from "art/modes/dom";
+// import * as artMode from "art/modes/current";
+// artMode.setCurrent(domMode);
 // require('art/modes/current').setCurrent(require('art/modes/dom'));
 
 class KfDemo extends React.PureComponent<
@@ -206,37 +208,37 @@ ReactDOM.render(
       hasProgress={true}
       fps={24}
       duration={4000}
-      renderWithProgressAndSize={(progress, size) => (
+      renderWithProgressAndSize={(prg, size) => (
         <div>
           <KfSpriteMapSurfaceAnimator
             width={size}
-            progress={progress}
-            doc={require("./assets/sorry.json") as IKfDocument}
+            progress={prg}
+            doc={require("./assets/sorry.json")}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
-            progress={progress}
-            doc={require("./assets/anger.json") as IKfDocument}
+            progress={prg}
+            doc={require("./assets/anger.json")}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
-            progress={progress}
-            doc={require("./assets/haha.json") as IKfDocument}
+            progress={prg}
+            doc={require("./assets/haha.json")}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
-            progress={progress}
-            doc={require("./assets/like.json") as IKfDocument}
+            progress={prg}
+            doc={require("./assets/like.json")}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
-            progress={progress}
-            doc={require("./assets/yay.json") as IKfDocument}
+            progress={prg}
+            doc={require("./assets/yay.json")}
           />
           <KfSpriteMapSurfaceAnimator
             width={size}
-            progress={progress}
-            doc={require("./assets/love.json") as IKfDocument}
+            progress={prg}
+            doc={require("./assets/love.json")}
           />
         </div>
       )}
@@ -251,36 +253,12 @@ ReactDOM.render(
       duration={4000}
       renderWithProgressAndSize={(progress, size) => (
         <div>
-          <KfImageSurface
-            width={size}
-            progress={progress}
-            doc={require("./assets/sorry.json") as IKfDocument}
-          />
-          <KfImageSurface
-            width={size}
-            progress={progress}
-            doc={require("./assets/anger.json") as IKfDocument}
-          />
-          <KfImageSurface
-            width={size}
-            progress={progress}
-            doc={require("./assets/haha.json") as IKfDocument}
-          />
-          <KfImageSurface
-            width={size}
-            progress={progress}
-            doc={require("./assets/like.json") as IKfDocument}
-          />
-          <KfImageSurface
-            width={size}
-            progress={progress}
-            doc={require("./assets/yay.json") as IKfDocument}
-          />
-          <KfImageSurface
-            width={size}
-            progress={progress}
-            doc={require("./assets/love.json") as IKfDocument}
-          />
+          <KfImageSurface width={size} progress={progress} doc={require("./assets/sorry.json")} />
+          <KfImageSurface width={size} progress={progress} doc={require("./assets/anger.json")} />
+          <KfImageSurface width={size} progress={progress} doc={require("./assets/haha.json")} />
+          <KfImageSurface width={size} progress={progress} doc={require("./assets/like.json")} />
+          <KfImageSurface width={size} progress={progress} doc={require("./assets/yay.json")} />
+          <KfImageSurface width={size} progress={progress} doc={require("./assets/love.json")} />
         </div>
       )}
     />
@@ -292,12 +270,12 @@ ReactDOM.render(
       duration={4000}
       renderWithProgressAndSize={size => (
         <div>
-          <KfSpriteMapSurface width={size} doc={require("./assets/sorry.json") as IKfDocument} />
-          <KfSpriteMapSurface width={size} doc={require("./assets/anger.json") as IKfDocument} />
-          <KfSpriteMapSurface width={size} doc={require("./assets/haha.json") as IKfDocument} />
-          <KfSpriteMapSurface width={size} doc={require("./assets/like.json") as IKfDocument} />
-          <KfSpriteMapSurface width={size} doc={require("./assets/yay.json") as IKfDocument} />
-          <KfSpriteMapSurface width={size} doc={require("./assets/love.json") as IKfDocument} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/sorry.json")} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/anger.json")} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/haha.json")} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/like.json")} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/yay.json")} />
+          <KfSpriteMapSurface width={size} doc={require("./assets/love.json")} />
         </div>
       )}
     />
