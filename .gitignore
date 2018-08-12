@@ -1,4 +1,4 @@
-
-*.alloc
-
-*.jar
+**/node_modules
+**/.backups
+**/.npmrc
+**/build
