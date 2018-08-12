@@ -1,4 +1,4 @@
-export function hexColorSwapAlphaPosition(color: string): string {
+export function hexColorSwapAlphaPosition(color?: string): string {
   if (!color) {
     return "";
   }
