@@ -131,6 +131,8 @@ declare module "art/morph/path" {
 }
 
 declare module "art/core/color";
+declare module "art/modes/dom";
+declare module "art/modes/current";
 
 // export namespace ClippingRectangle {
 //     const prototype: {
