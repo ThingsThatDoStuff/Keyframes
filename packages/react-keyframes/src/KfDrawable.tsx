@@ -1,4 +1,4 @@
-import { Surface, Group, Shape, Transform, LinearGradient } from "react-art";
+import { Group, Shape, Transform, LinearGradient } from "react-art";
 import {
   KfDrawableProps,
   KfTimingCurve,
@@ -8,7 +8,7 @@ import {
 import { EasingFunction } from "bezier-easing";
 import * as React from "react";
 import * as BezierEasing from "bezier-easing";
-import Morph from "art/morph/path";
+import * as Morph from "art/morph/path";
 import {
   blendNumbersLinear,
   filterToStroke,
@@ -111,7 +111,7 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
 
   render() {
     let { visible } = this.props;
-    const { width, height, x, y, progress } = this.props;
+    const { width, height, x, y, progress = 0 } = this.props;
     const {
       name,
       canvas_size: [docWidth, docHeight],
@@ -143,7 +143,7 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
         height={docHeight}
         transform={groupTransform}
       >
-        {features.map((feature, index) => {
+        {features.map(feature => {
           const {
             name,
             fill_color,
@@ -193,7 +193,7 @@ export class KfDrawable extends React.Component<KfDrawableProps> {
           feature_animations &&
             feature_animations
               .filter(filterToStroke)
-              .forEach(({ property, timing_curves, key_values }) => {
+              .forEach(({ timing_curves, key_values }) => {
                 const values = getValueForCurrentFrame(
                   key_values,
                   timing_curves,
